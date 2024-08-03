@@ -1,5 +1,6 @@
 package ru.mudan.translatetask.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -7,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import ru.mudan.translatetask.service.ResultService;
 import ru.mudan.translatetask.service.TranslateService;
 
 import java.util.concurrent.CountDownLatch;
@@ -17,9 +19,11 @@ import java.util.concurrent.Executors;
 @RequestMapping("/translate")
 public class TranslateController {
     private final TranslateService translateService;
+    private final ResultService resultService;
     @Autowired
-    public TranslateController(TranslateService translateService) {
+    public TranslateController(TranslateService translateService, ResultService resultService) {
         this.translateService = translateService;
+        this.resultService = resultService;
     }
 
     @GetMapping
@@ -29,6 +33,7 @@ public class TranslateController {
     }
     @PostMapping
     public String send(Model model,
+                       HttpServletRequest request,
                        @RequestParam("q")String q,
                        @RequestParam("source")String source,
                        @RequestParam("target")String target) throws InterruptedException {
@@ -46,8 +51,10 @@ public class TranslateController {
             });
         }
         latch.await();
-
         String translatedPhrase = String.join(" ", translatedWords);
+
+        String ipAddress = request.getRemoteAddr();
+        resultService.save(ipAddress,q,translatedPhrase);
         model.addAttribute("response",translatedPhrase);
         return "views/index";
     }
