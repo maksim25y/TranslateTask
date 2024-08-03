@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Главная страница</title>
+</head>
+<body>
+
+<form th:action="@{/translate}" th:method="POST">
+    <div>
+        <label for="q">Введите текст для перевода</label>
+        <input type="text" name="q" id="q" required class="form-control" >
+    </div>
+    <div>
+        <label for="source">С какого языка:</label>
+        <input type="text" name="source" id="source" required class="form-control" >
+    </div>
+    <div>
+        <label for="target">На какой язык:</label>
+        <input type="text" name="target" id="target" required class="form-control" >
+    </div>
+    <button type="submit">Перевод</button>
+</form>
+<p th:if="${error}" th:text="${error}">
+
+</p>
+<p th:if="${response}" th:text="${'Перевод: '+response}">
+
+</p>
+
+</body>
+</html>
