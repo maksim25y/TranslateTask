@@ -1,6 +1,7 @@
 package ru.mudan.translatetask.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -34,9 +35,15 @@ public class TranslateController {
     @PostMapping
     public String send(Model model,
                        HttpServletRequest request,
+                       HttpServletResponse response,
                        @RequestParam("q")String q,
                        @RequestParam("source")String source,
                        @RequestParam("target")String target) throws InterruptedException {
+        if(!translateService.containsLanguage(source) || !translateService.containsLanguage(target)){
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            model.addAttribute("error","Не найден язык исходного сообщения");
+            return "views/index";
+        }
         String[] wordsInPhrase = q.split(" ");
         String[]translatedWords = new String[wordsInPhrase.length];
         ExecutorService executorService = Executors.newFixedThreadPool(10);
