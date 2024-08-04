@@ -2,6 +2,7 @@ package ru.mudan.translatetask.dao;
 
 import org.springframework.stereotype.Component;
 import ru.mudan.translatetask.entity.Result;
+import ru.mudan.translatetask.exceptions.ResultDaoException;
 import ru.mudan.translatetask.util.ConnectionManager;
 
 import java.sql.SQLException;
@@ -19,7 +20,7 @@ public class ResultDAO {
             preparedStatement.executeUpdate();
             System.out.println(preparedStatement);
         } catch (SQLException e) {
-            throw new RuntimeException();
+            throw new ResultDaoException("Error saving result to database", e);
         }
     }
 }

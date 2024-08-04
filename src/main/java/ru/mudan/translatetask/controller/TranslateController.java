@@ -15,6 +15,7 @@ import ru.mudan.translatetask.service.TranslateService;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 @Controller
 @RequestMapping("/translate")
@@ -48,18 +49,29 @@ public class TranslateController {
         String[]translatedWords = new String[wordsInPhrase.length];
         ExecutorService executorService = Executors.newFixedThreadPool(10);
         CountDownLatch latch = new CountDownLatch(wordsInPhrase.length);
+        AtomicBoolean hasError = new AtomicBoolean(false);
         for(int i=0;i<wordsInPhrase.length;i++){
             int index = i;
             executorService.execute(() -> {
-                    String a = translateService.result(wordsInPhrase[index], source, target);
-                    translatedWords[index]=a;
-                    System.out.println(Thread.currentThread().getName()+" "+wordsInPhrase[index]);
-                    latch.countDown();
+                    try {
+                        String a = translateService.result(wordsInPhrase[index], source, target);
+                        translatedWords[index] = a;
+                        System.out.println(Thread.currentThread().getName() + " " + wordsInPhrase[index]);
+                    }catch (Exception e){
+                        hasError.set(true);
+                        executorService.shutdownNow();
+                    }finally {
+                        latch.countDown();
+                    }
             });
         }
         latch.await();
+        if (hasError.get()) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            model.addAttribute("error", "Ошибка доступа к ресурсу перевода");
+            return "views/index";
+        }
         String translatedPhrase = String.join(" ", translatedWords);
-
         String ipAddress = request.getRemoteAddr();
         resultService.save(ipAddress,q,translatedPhrase);
         model.addAttribute("response",translatedPhrase);

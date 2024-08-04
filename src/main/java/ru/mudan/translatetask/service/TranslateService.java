@@ -11,6 +11,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import ru.mudan.translatetask.exceptions.TranslateException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -42,16 +43,21 @@ public class TranslateService {
     private List<String>fetchLanguages(){
         HttpEntity<String> entity = new HttpEntity<>(headers);
 
-        String response = restTemplate.exchange(
+        var responseEntity = restTemplate.exchange(
                 LANGUAGES_API,
                 HttpMethod.GET,
                 entity,
                 String.class
-        ).getBody();
+        );
+        if (!responseEntity.getStatusCode().is2xxSuccessful()) {
+            throw new TranslateException(responseEntity.getStatusCode());
+        }
+        String response = responseEntity.getBody();
         JsonObject jsonObject = gson.fromJson(response, JsonObject.class);
-
+        if (!jsonObject.has("languages") || !jsonObject.get("languages").isJsonArray()) {
+            throw new RuntimeException("Response with languages does not contain a 'languages' array");
+        }
         JsonArray languagesArray = jsonObject.getAsJsonArray("languages");
-
         List<String> languages = new ArrayList<>();
         for (JsonElement languageElement : languagesArray) {
             JsonObject languageObject = languageElement.getAsJsonObject();
@@ -72,13 +78,16 @@ public class TranslateService {
             throw new RuntimeException(e);
         }
         HttpEntity<String> requestEntity = new HttpEntity<>(jsonString, headers);
-        var a = restTemplate.exchange(
+        var responseEntity = restTemplate.exchange(
                 TRANSLATE_API,
                 HttpMethod.POST,
                 requestEntity,
                 String.class
         );
-        String response = a.getBody();
+        if(!responseEntity.getStatusCode().is2xxSuccessful()){
+            throw new TranslateException(responseEntity.getStatusCode());
+        }
+        String response = responseEntity.getBody();
         TranslationResponse responseFromApi = gson.fromJson(response, TranslationResponse.class);
         return responseFromApi.getData().getTranslations().getTranslatedText();
     }
