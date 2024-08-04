@@ -1,0 +1,10 @@
+D:\TranslateTask\src\main\java\ru\mudan\translatetask\controller\TranslateController.java
+D:\TranslateTask\src\main\java\ru\mudan\translatetask\dao\ResultDAO.java
+D:\TranslateTask\src\main\java\ru\mudan\translatetask\entity\Result.java
+D:\TranslateTask\src\main\java\ru\mudan\translatetask\exceptions\ResultDaoException.java
+D:\TranslateTask\src\main\java\ru\mudan\translatetask\exceptions\TranslateException.java
+D:\TranslateTask\src\main\java\ru\mudan\translatetask\service\ResultService.java
+D:\TranslateTask\src\main\java\ru\mudan\translatetask\service\TranslateService.java
+D:\TranslateTask\src\main\java\ru\mudan\translatetask\TranslateTaskApplication.java
+D:\TranslateTask\src\main\java\ru\mudan\translatetask\util\ConnectionManager.java
+D:\TranslateTask\src\main\java\ru\mudan\translatetask\util\PropertiesUtil.java

@@ -1,0 +1,13 @@
+ru\mudan\translatetask\service\TranslateService$TranslationResponse$Data.class
+ru\mudan\translatetask\entity\Result.class
+ru\mudan\translatetask\exceptions\TranslateException.class
+ru\mudan\translatetask\service\ResultService.class
+ru\mudan\translatetask\service\TranslateService$TranslationResponse.class
+ru\mudan\translatetask\dao\ResultDAO.class
+ru\mudan\translatetask\util\ConnectionManager.class
+ru\mudan\translatetask\service\TranslateService$TranslationResponse$Translations.class
+ru\mudan\translatetask\service\TranslateService.class
+ru\mudan\translatetask\exceptions\ResultDaoException.class
+ru\mudan\translatetask\TranslateTaskApplication.class
+ru\mudan\translatetask\controller\TranslateController.class
+ru\mudan\translatetask\util\PropertiesUtil.class
