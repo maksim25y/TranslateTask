@@ -2,6 +2,7 @@ package ru.mudan.translatetask.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,6 +21,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 @Controller
 @RequestMapping("/translate")
 public class TranslateController {
+    private static final Logger LOGGER = Logger.getLogger(TranslateController.class);
     private final TranslateService translateService;
     private final ResultService resultService;
     @Autowired
@@ -54,11 +56,11 @@ public class TranslateController {
             int index = i;
             executorService.execute(() -> {
                     try {
-                        String a = translateService.result(wordsInPhrase[index], source, target);
-                        translatedWords[index] = a;
-                        System.out.println(Thread.currentThread().getName() + " " + wordsInPhrase[index]);
+                        String translatedWord = translateService.result(wordsInPhrase[index], source, target);
+                        translatedWords[index] = translatedWord;
                     }catch (Exception e){
                         hasError.set(true);
+                        LOGGER.error("Translation error");
                         executorService.shutdownNow();
                     }finally {
                         latch.countDown();

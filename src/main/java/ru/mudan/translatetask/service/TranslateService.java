@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -20,6 +22,7 @@ import java.util.Map;
 
 @Service
 public class TranslateService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(TranslateService.class);
     private static final String TRANSLATE_API = "https://deep-translate1.p.rapidapi.com/language/translate/v2";
     private final String LANGUAGES_API = "https://deep-translate1.p.rapidapi.com/language/translate/v2/languages";
     private final RestTemplate restTemplate;
@@ -75,6 +78,7 @@ public class TranslateService {
         try {
             jsonString = mapper.writeValueAsString(requestBody);
         } catch (JsonProcessingException e) {
+            LOGGER.error("Error reading information");
             throw new RuntimeException(e);
         }
         HttpEntity<String> requestEntity = new HttpEntity<>(jsonString, headers);
@@ -85,6 +89,7 @@ public class TranslateService {
                 String.class
         );
         if(!responseEntity.getStatusCode().is2xxSuccessful()){
+            LOGGER.error("API access error");
             throw new TranslateException(responseEntity.getStatusCode());
         }
         String response = responseEntity.getBody();
