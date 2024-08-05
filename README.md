@@ -29,10 +29,10 @@ docker-compose up --build
 Чтобы остановить работу контейнеров, в терминале, откуда вы запускали docker-compose нажмите Ctrl+C (Control + C для Mac)
 </details>
 <details><summary>Доступные языки</summary>
-en - English
-
 
 af - Afrikaans
+
+en - English
 
 sq - Albanian
 
