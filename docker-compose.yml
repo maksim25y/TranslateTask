@@ -12,6 +12,8 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
   springboot:
+    depends_on:
+      - db
     image: openjdk:21
     ports:
       - "8080:8080"
