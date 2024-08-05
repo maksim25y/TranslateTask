@@ -30,7 +30,8 @@ docker-compose up --build
 </details>
 <details><summary>Доступные языки</summary>
 en - English
-  
+
+
 af - Afrikaans
 
 sq - Albanian
