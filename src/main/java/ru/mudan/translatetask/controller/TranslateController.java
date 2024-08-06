@@ -47,16 +47,16 @@ public class TranslateController {
             model.addAttribute("error","Не найден язык исходного сообщения");
             return "views/index";
         }
-        String[] wordsInPhrase = q.split(" ");
-        String[]translatedWords = new String[wordsInPhrase.length];
+        String[] wordsInMessage = q.split(" ");
+        String[]translatedWords = new String[wordsInMessage.length];
         ExecutorService executorService = Executors.newFixedThreadPool(10);
-        CountDownLatch latch = new CountDownLatch(wordsInPhrase.length);
+        CountDownLatch latch = new CountDownLatch(wordsInMessage.length);
         AtomicBoolean hasError = new AtomicBoolean(false);
-        for(int i=0;i<wordsInPhrase.length;i++){
+        for(int i=0;i<wordsInMessage.length;i++){
             int index = i;
             executorService.execute(() -> {
                     try {
-                        String translatedWord = translateService.result(wordsInPhrase[index], source, target);
+                        String translatedWord = translateService.result(wordsInMessage[index], source, target);
                         translatedWords[index] = translatedWord;
                     }catch (Exception e){
                         hasError.set(true);
@@ -73,10 +73,10 @@ public class TranslateController {
             model.addAttribute("error", "Ошибка доступа к ресурсу перевода");
             return "views/index";
         }
-        String translatedPhrase = String.join(" ", translatedWords);
+        String translatedMessage = String.join(" ", translatedWords);
         String ipAddress = request.getRemoteAddr();
-        resultService.save(ipAddress,q,translatedPhrase);
-        model.addAttribute("response",translatedPhrase);
+        resultService.save(ipAddress,q,translatedMessage);
+        model.addAttribute("response",translatedMessage);
         return "views/index";
     }
 }
